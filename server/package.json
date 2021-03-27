@@ -1,0 +1,39 @@
+{
+   "name": "new-typeorm-project",
+   "version": "0.0.1",
+   "description": "Awesome project developed with TypeORM.",
+   "devDependencies": {
+      "@types/connect-redis": "^0.0.16",
+      "@types/express": "^4.17.11",
+      "@types/express-session": "^1.17.3",
+      "@types/ioredis": "^4.22.0",
+      "@types/node": "^14.14.31",
+      "ts-node": "^9.1.1",
+      "typescript": "^4.2.2"
+   },
+   "dependencies": {
+      "apollo-server-express": "^2.21.0",
+      "argon2": "^0.27.1",
+      "connect-redis": "^5.1.0",
+      "cors": "^2.8.5",
+      "dotenv": "^8.2.0",
+      "express": "^4.17.1",
+      "express-session": "^1.17.1",
+      "graphql": "^15.5.0",
+      "ioredis": "^4.23.0",
+      "nodemon": "^2.0.7",
+      "pg": "^8.5.1",
+      "reflect-metadata": "^0.1.13",
+      "type-graphql": "^1.1.1",
+      "typeorm": "^0.2.31"
+   },
+   "scripts": {
+      "orm": "ts-node --require dotenv/config ./node_modules/typeorm/cli.js --config src/ormconfig.ts ",
+      "start": "ts-node -r dotenv/config src/index.ts",
+      "dev": "nodemon --exec ts-node -r dotenv/config src/index.ts",
+      "makeMigrations": "yarn orm migration:generate",
+      "migrate": "yarn orm migration:run",
+      "migration:revert": "yarn orm migration:revert",
+      "gen-env": "npx gen-env-types .env -o src/env.d.ts -e ."
+   }
+}
