@@ -11,14 +11,16 @@ import Redis from 'ioredis';
 import session from 'express-session';
 import connectRedis from "connect-redis";
 import { COOKIE_NAME, __prod__, REDIS_SECRET } from "./utils/constants";
+// import { sendEmail } from "./utils/sendEmail";
 
 (async () => {
+    // sendEmail('mattia@mattia.com', "hi")
     await createConnection(dbConfig as ConnectionOptions)
 
     const app = express()
 
     app.use(cors({
-        origin: "http://localhost:3000",
+        origin: "http://localhost:8080",
         credentials: true
     }))
 
@@ -47,7 +49,7 @@ import { COOKIE_NAME, __prod__, REDIS_SECRET } from "./utils/constants";
             resolvers: [UserResolver],
             validate: false
         }),
-        context: ({ req, res }): MyContext => ({ req, res })
+        context: ({ req, res }): MyContext => ({ req, res, redis })
     })
 
     apolloServer.applyMiddleware({

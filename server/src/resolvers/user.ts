@@ -4,6 +4,10 @@ import { validateRegister } from "./../utils/validationRegister";
 import { Arg, Ctx, Field, Mutation, ObjectType, Query, Resolver } from "type-graphql";
 import { UsernamePasswordInput } from "./UsernamePasswordInput";
 import argon2 from "argon2"
+import { sendEmail } from "../utils/sendEmail";
+import { v4 } from "uuid";
+import { FORGET_PASSWORD_PREFIX } from "../utils/constants";
+
 
 @ObjectType()
 class FieldError {
@@ -124,4 +128,62 @@ export class UserResolver {
             })
         })
     }
+    @Mutation(() => Boolean)
+    async forgotPassword(
+        @Arg("email") email: string,
+        @Ctx() { redis, }: MyContext
+    ) {
+        const user = await User.findOne({ email })
+
+        if (!user) {
+            return true
+        }
+        const token = v4()
+        await redis.set(FORGET_PASSWORD_PREFIX + token, user.id, "ex", 1000 * 60 * 60 * 24)
+
+        await sendEmail(email, `<a href="http://localhost:8080/#/change-password/${token}">reset password</a>`)
+        return true
+    }
+
+    @Mutation(() => UserResponse)
+    async changePassword(
+        @Arg("token") token: string,
+        @Arg("newPassword") newPassword: string,
+        @Ctx() { redis, req }: MyContext
+    ): Promise<UserResponse> {
+        const key = FORGET_PASSWORD_PREFIX + token
+        const userId = await redis.get(key)
+
+        if (!userId) {
+            return {
+                errors: [
+                    {
+                        field: "token",
+                        message: "invalid token"
+                    }
+                ]
+            }
+        }
+
+        const user = await User.findOne({ where: { id: parseInt(userId) } })
+        if (!user) {
+            return {
+                errors: [
+                    {
+                        field: "token",
+                        message: "user no longer exist"
+                    }
+                ]
+            }
+        }
+        const hashedPsw = await argon2.hash(newPassword)
+
+        user.password = hashedPsw
+        await User.save(user)
+        req.session.userId = user.id
+        await redis.del(key)
+        return { user }
+
+    }
+
 }
