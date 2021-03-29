@@ -6,7 +6,7 @@ import { UsernamePasswordInput } from "./UsernamePasswordInput";
 import argon2 from "argon2"
 import { sendEmail } from "../utils/sendEmail";
 import { v4 } from "uuid";
-import { FORGET_PASSWORD_PREFIX } from "../utils/constants";
+import { FORGET_PASSWORD_PREFIX, partialAuth } from "../utils/constants";
 
 
 @ObjectType()
@@ -45,9 +45,23 @@ export class UserResolver {
     }
 
 
-    @Query(() => [User])
-    async users(): Promise<User[]> {
-        return await User.find()
+    @Query(() => [User], { nullable: true } || null)
+    async users(
+        @Ctx() { req }: MyContext
+    ): Promise<User[] | null> {
+        if (req.session.userId) {
+            let user = await User.findOne({ where: { id: req.session.userId } })
+            let isAuth = partialAuth.includes(user!.role)
+            if (isAuth) {
+                return await User.find({
+                    order: {
+                        id: "DESC"
+                    }
+                })
+            }
+        }
+        return null
+
     }
 
     @Mutation(() => UserResponse)

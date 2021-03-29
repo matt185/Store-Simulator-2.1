@@ -1,9 +1,9 @@
 <template>
-  <div class="about">
-    <h1>user account</h1>
-  </div>
+  <v-card class="card">itemManager</v-card>
 </template>
 
 <script>
 export default {};
 </script>
+
+<style></style>
