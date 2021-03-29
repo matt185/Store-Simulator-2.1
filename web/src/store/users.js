@@ -1,17 +1,25 @@
 import graphqlClient from '../apollo';
 import gql from "graphql-tag"
+import isAuth from "../utils/isAuth"
 export default {
     namespaced: true,
     state: () => ({
-        user: ""
+        user: "",
+        isLogged: false,
+        auth: false
     }),
     mutations: {
         setUser(state, user) {
             state.user = user
+            state.isLogged = true
+            state.auth = isAuth(user.user.role)
         },
         logout(state) {
             state.user = ""
-        }
+            state.isLogged = false
+            state.auth = false
+        },
+
     },
     actions: {
         async login({
@@ -37,7 +45,6 @@ export default {
                 }
             })
             const user = response.data.login
-            // commit(`setIsAuth`, user)
             commit('setUser', user)
         },
         async changePsw({
@@ -76,7 +83,7 @@ export default {
                 `
             })
             commit('logout')
-        }
+        },
     },
     getters: {}
 }

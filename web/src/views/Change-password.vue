@@ -6,7 +6,10 @@
     >
       <v-card-title>Update Password</v-card-title>
       <v-form ref="form" v-model="valid" lazy-validation>
-      <p v-if="this.$store.state.users.user.errors"> Invalid token</p>
+        <p v-if="this.$store.state.users.user.errors">
+          Token expired for a new one click
+          <router-link to="/forgot-password"> here </router-link>
+        </p>
         <v-text-field
           v-else
           type="password"
@@ -16,7 +19,12 @@
           required
         ></v-text-field>
         <!-- <p v-else> Token expired</p> -->
-        <v-btn :disabled="!valid" color="success" class="mr-4" @click="validate(input.newPassword)">
+        <v-btn
+          :disabled="!valid"
+          color="success"
+          class="mr-4"
+          @click="validate(input.newPassword)"
+        >
           Validate
         </v-btn>
         <v-btn color="error" class="mr-4" @click="reset"> Reset Form </v-btn>
@@ -31,7 +39,7 @@ export default {
   data: () => ({
     input: {
       newPassword: "",
-      error:""
+      error: "",
     },
     valid: true,
     passwordRule: [
@@ -39,11 +47,18 @@ export default {
       (v) => (v && v.length >= 4) || "The password must more than 4 characters",
     ],
   }),
+  computed: {
+    isLogged() {
+      return this.$store.state.users.isLogged;
+    },
+  },
   methods: {
     validate(data) {
-      const input = {token :this.token,newPassword:data}
+      const input = { token: this.token, newPassword: data };
       this.$store.dispatch("users/changePsw", input);
-      console.log(this.$store.state.users.user.errors)
+      if (!this.$store.state.users.user.user) {
+        this.$router.push("/");
+      }
     },
     reset() {
       this.$refs.form.reset();

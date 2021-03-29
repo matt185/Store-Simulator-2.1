@@ -22,12 +22,21 @@
           label="Password"
           required
         ></v-text-field>
+        <v-flex class="d-flex flex-column align-center">
+          <v-flex class="d-flex flex-row">
+            <v-btn
+              :disabled="!valid"
+              color="success"
+              class="mr-4"
+              @click="validate(input)"
+            >
+              Validate
+            </v-btn>
 
-        <v-btn :disabled="!valid" color="success" class="mr-4" @click="validate(input)">
-          Validate
-        </v-btn>
-
-        <v-btn color="error" class="mr-4" @click="reset"> Reset Form </v-btn>
+            <v-btn color="error" class="mr-4" @click="reset"> Reset Form </v-btn>
+          </v-flex>
+          <a href=""><router-link to="/forgot-password">forgot password?</router-link></a>
+        </v-flex>
       </v-form>
     </v-card>
   </v-flex>
@@ -55,6 +64,7 @@ export default {
   methods: {
     validate(data) {
       this.$store.dispatch("users/login", data);
+      this.$router.push("/");
     },
     reset() {
       this.$refs.form.reset();

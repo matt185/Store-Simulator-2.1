@@ -133,6 +133,7 @@ export class UserResolver {
         @Arg("email") email: string,
         @Ctx() { redis, }: MyContext
     ) {
+
         const user = await User.findOne({ email })
 
         if (!user) {

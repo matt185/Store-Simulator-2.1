@@ -36,6 +36,11 @@ const routes = [{
       };
       return props;
     },
+  },
+  {
+    path: "/forgot-password",
+    name: "Forgot-password",
+    component: () => import('../views/ForgotPassword.vue'),
   }
 ]
 
