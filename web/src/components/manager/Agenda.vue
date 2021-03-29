@@ -1,9 +1,9 @@
 <template>
-  <div class="about">
-    <h1>about page</h1>
-  </div>
+  <v-card class="card">agenda</v-card>
 </template>
 
 <script>
 export default {};
 </script>
+
+<style></style>

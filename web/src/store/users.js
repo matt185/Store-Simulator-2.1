@@ -4,6 +4,7 @@ import isAuth from "../utils/isAuth"
 export default {
     namespaced: true,
     state: () => ({
+        users: [],
         user: "",
         isLogged: false,
         auth: false
@@ -19,6 +20,9 @@ export default {
             state.isLogged = false
             state.auth = false
         },
+        setUsers(state, users) {
+            state.users = users
+        }
 
     },
     actions: {
@@ -84,6 +88,26 @@ export default {
             })
             commit('logout')
         },
+        async users({
+            commit
+        }) {
+            const response = await graphqlClient.query({
+                query: gql `
+                query users{
+                    users{
+                        id
+                        username
+                        phone
+                        role
+                        createdAt
+                        updatedAt
+                    }
+                }`
+            })
+            const users = response.data.users
+            console.log(users)
+            commit("setUsers", users)
+        }
     },
     getters: {}
 }

@@ -41,11 +41,19 @@
               </router-link>
             </v-list-item>
             <v-list-item v-if="isLogged">
-              <router-link class="d-flex flex-row" to="/about">
+              <router-link class="d-flex flex-row" to="/account">
                 <v-list-item-icon>
                   <v-icon>mdi-account</v-icon>
                 </v-list-item-icon>
                 <v-list-item-title>Account</v-list-item-title>
+              </router-link>
+            </v-list-item>
+            <v-list-item v-if="isAuth && isLogged">
+              <router-link class="d-flex flex-row" to="/manager">
+                <v-list-item-icon>
+                  <v-icon>mdi-database</v-icon>
+                </v-list-item-icon>
+                <v-list-item-title>Manager</v-list-item-title>
               </router-link>
             </v-list-item>
             <v-list-item v-if="!isLogged">
@@ -62,14 +70,6 @@
                   <v-icon @click="logout()">mdi-logout</v-icon>
                 </v-list-item-icon>
                 <v-list-item-title @click="logout()">Logout</v-list-item-title>
-              </router-link>
-            </v-list-item>
-            <v-list-item v-if="isAuth">
-              <router-link class="d-flex flex-row" to="/">
-                <v-list-item-icon>
-                  <v-icon>mdi-home</v-icon>
-                </v-list-item-icon>
-                <v-list-item-title>Home</v-list-item-title>
               </router-link>
             </v-list-item>
           </v-list-item-group>
